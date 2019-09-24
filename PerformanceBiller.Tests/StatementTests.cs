@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PerformanceBiller.Model;
 using System.IO;
+using System.Linq;
 using Xunit;
 
 namespace PerformanceBiller.Tests
@@ -20,12 +22,11 @@ namespace PerformanceBiller.Tests
             var statement = new Statement();
 
             using (var invoicesFile = File.OpenText("..\\..\\..\\invoices.json"))
-            using (var invoicesReader = new JsonTextReader(invoicesFile))
             using (var playsFile = File.OpenText("..\\..\\..\\plays.json"))
             using (var playsReader = new JsonTextReader(playsFile)) {
-                var invoices = (JArray) JToken.ReadFrom(invoicesReader);
+                var invoices = JsonConvert.DeserializeObject<Invoice[]>(invoicesFile.ReadToEnd());
 
-                var invoice = (JObject) invoices.First;
+                var invoice = invoices.First();
 
                 var plays = (JObject) JToken.ReadFrom(playsReader);
 
