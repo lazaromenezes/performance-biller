@@ -29,7 +29,7 @@ namespace PerformanceBiller.Tests
 
                 var plays = (JObject) JToken.ReadFrom(playsReader);
 
-                var actualResult = statement.Run(invoice, plays);
+                var actualResult = statement.BuildStatement(invoice, plays);
 
                 Assert.Equal(expectedOutput, actualResult);
             }

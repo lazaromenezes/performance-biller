@@ -6,7 +6,7 @@ namespace PerformanceBiller
 {
     public class Statement
     {
-        public string Run(JObject invoice, JObject plays)
+        public string BuildStatement(JObject invoice, JObject plays)
         {
             var totalAmount = 0;
             var volumeCredits = 0;
