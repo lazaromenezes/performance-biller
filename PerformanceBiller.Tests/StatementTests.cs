@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PerformanceBiller.Model;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Xunit;
@@ -28,7 +28,7 @@ namespace PerformanceBiller.Tests
 
                 var invoice = invoices.First();
 
-                var plays = (JObject) JToken.ReadFrom(playsReader);
+                var plays = JsonConvert.DeserializeObject<Dictionary<string, Play>>(playsFile.ReadToEnd());
 
                 var actualResult = statement.BuildStatement(invoice, plays);
 
