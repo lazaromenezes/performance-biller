@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using PerformanceBiller.Calculators;
 using PerformanceBiller.Model;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,13 @@ namespace PerformanceBiller.Tests
                 "Amount owed is $1,730.00\n" +
                 "You earned 47 credits\n";
 
-            var statement = new Statement();
+            var calculators = new IPlayTypeCalculator[2]
+            {
+                new TragedyPlayTypeCalculator(),
+                new ComedyPlayTypeCalculator()
+            };
+
+            var statement = new Statement(calculators);
 
             using (var invoicesFile = File.OpenText("..\\..\\..\\invoices.json"))
             using (var playsFile = File.OpenText("..\\..\\..\\plays.json"))
