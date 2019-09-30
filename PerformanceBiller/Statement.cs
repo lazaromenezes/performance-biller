@@ -1,4 +1,5 @@
-﻿using PerformanceBiller.Model;
+﻿using PerformanceBiller.Calculators;
+using PerformanceBiller.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,27 +10,20 @@ namespace PerformanceBiller
     {
         public string BuildStatement(Invoice invoice, Dictionary<string, Play> plays)
         {
-            var totalAmount = 0;
+            var totalAmount = 0m;
             var volumeCredits = 0;
             var result = $"Statement for {invoice.Customer}\n";
             var cultureInfo = new CultureInfo("en-US");
 
             foreach (var perf in invoice.Performances) {
                 var play = plays[perf.PlayID];
-                var thisAmount = 0;
+                var thisAmount = 0m;
                 switch (play.Type) {
                     case "tragedy":
-                        thisAmount = 40000;
-                        if (perf.Audience > 30) {
-                            thisAmount += 1000 * (perf.Audience - 30);
-                        }
+                        thisAmount = new TragedyPlayTypeCalculator().Calculate(perf);
                         break;
                     case "comedy":
-                        thisAmount = 30000;
-                        if (perf.Audience > 20) {
-                            thisAmount += 10000 + 500 * (perf.Audience - 20);
-                        }
-                        thisAmount += 300 * perf.Audience;
+                        thisAmount = new CommedyPlayTypeCalculator().Calculate(perf);
                         break;
                     default:
                         throw new Exception($"unknown type: { play.Type}");
