@@ -1,4 +1,5 @@
 ﻿using PerformanceBiller.Calculators;
+using PerformanceBiller.Exceptions;
 using PerformanceBiller.Model;
 using System;
 using System.Collections.Generic;
@@ -36,10 +37,11 @@ namespace PerformanceBiller
                 result += $" {play.Name}: {(performanceAmount / 100).ToString("C", cultureInfo)} ({performance.Audience} seats)\n";
                 totalAmount += performanceAmount;
             }
-            result += $"Amount owed is {(totalAmount/100).ToString("C", cultureInfo)}\n";
-             result += $"You earned {volumeCredits} credits\n";
 
-             return result;
+            result += $"Amount owed is {(totalAmount/100).ToString("C", cultureInfo)}\n";
+            result += $"You earned {volumeCredits} credits\n";
+
+            return result;
         }
 
         private decimal CalculatePerformanceAmmount(Performance perf, Play play)
@@ -48,7 +50,7 @@ namespace PerformanceBiller
                 if (calculator.IsApplicable(play))
                     return calculator.Calculate(perf);
 
-            throw new Exception($"unknown type: { play.Type}");
+            throw new UnkonwPlayTypeException(play);
         }
     }
 }
