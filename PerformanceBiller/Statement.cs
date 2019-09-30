@@ -4,13 +4,14 @@ using PerformanceBiller.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text;
 
 namespace PerformanceBiller
 {
     public class Statement
     {
-        public readonly IPlayTypeCalculator[] _playTypeCalculators;
-        public readonly IAdditionalPerformanceCreditCalculator[] _creditsCalculators;
+        private readonly IPlayTypeCalculator[] _playTypeCalculators;
+        private readonly IAdditionalPerformanceCreditCalculator[] _creditsCalculators;
 
         public Statement(IPlayTypeCalculator[] playTypeCalculators,
             IAdditionalPerformanceCreditCalculator[] creditsCalculators)
@@ -21,10 +22,15 @@ namespace PerformanceBiller
 
         public string BuildStatement(Invoice invoice, Dictionary<string, Play> plays)
         {
+            var totalAmount = CalculateTotalAmount(invoice, plays);
+            var volumeCredits = CalculateVolumeCredits(invoice, plays);
+
+            return BuildStatementOutput(invoice, plays, totalAmount, volumeCredits);
+        }
+
+        private decimal CalculateTotalAmount(Invoice invoice, Dictionary<string, Play> plays)
+        {
             var totalAmount = 0m;
-            var volumeCredits = 0;
-            var result = $"Statement for {invoice.Customer}\n";
-            var cultureInfo = new CultureInfo("en-US");
 
             foreach (var performance in invoice.Performances)
             {
@@ -32,17 +38,72 @@ namespace PerformanceBiller
 
                 var performanceAmount = CalculatePerformanceAmmount(performance, play);
 
-                volumeCredits += CalculatePerformanceCredits(performance, play);
-
-                // print line for this order
-                result += $" {play.Name}: {(performanceAmount / 100).ToString("C", cultureInfo)} ({performance.Audience} seats)\n";
                 totalAmount += performanceAmount;
             }
 
-            result += $"Amount owed is {(totalAmount/100).ToString("C", cultureInfo)}\n";
-            result += $"You earned {volumeCredits} credits\n";
+            return totalAmount;
+        }
 
-            return result;
+        private int CalculateVolumeCredits(Invoice invoice, Dictionary<string, Play> plays)
+        {
+            var volumeCredits = 0;
+
+            foreach (var performance in invoice.Performances)
+            {
+                var play = plays[performance.PlayID];
+
+                volumeCredits += CalculatePerformanceCredits(performance, play);
+            }
+
+            return volumeCredits;
+        }
+
+        private string BuildStatementOutput(Invoice invoice, Dictionary<string, Play> plays, decimal totalAmount, int volumeCredits)
+        {
+            var statement = InitializeStatement(invoice);
+
+            AddStatementPlayLines(invoice, plays, statement);
+            AddStatementBottomLine(totalAmount, volumeCredits, statement);
+
+            return statement.ToString();
+        }
+
+        private StringBuilder InitializeStatement(Invoice invoice)
+        {
+            return new StringBuilder($"Statement for {invoice.Customer}\n");
+        }
+
+        private void AddStatementPlayLines(Invoice invoice, Dictionary<string, Play> plays, StringBuilder statement)
+        {
+            foreach (var performance in invoice.Performances)
+                AddPlayLine(plays, statement, performance);
+        }
+
+        private void AddPlayLine(Dictionary<string, Play> plays, StringBuilder statement, Performance performance)
+        {
+            var play = plays[performance.PlayID];
+
+            var performanceAmount = CalculatePerformanceAmmount(performance, play);
+
+            statement.Append(BuildPerformanceLine(performance, play, performanceAmount));
+        }
+
+        private void AddStatementBottomLine(decimal totalAmount, int volumeCredits, StringBuilder result)
+        {
+            result.Append($"Amount owed is {FormatCurrency(totalAmount)}\n");
+            result.Append($"You earned {volumeCredits} credits\n");
+        }
+
+        private string FormatCurrency(decimal totalAmount)
+        {
+            var cultureInfo = new CultureInfo("en-US");
+
+            return (totalAmount / 100).ToString("C", cultureInfo);
+        }
+
+        private string BuildPerformanceLine(Performance performance, Play play, decimal performanceAmount)
+        {
+            return $" {play.Name}: {FormatCurrency(performanceAmount)} ({performance.Audience} seats)\n";
         }
 
         private int CalculatePerformanceCredits(Performance performance, Play play)
