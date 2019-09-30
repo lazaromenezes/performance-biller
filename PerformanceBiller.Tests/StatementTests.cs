@@ -20,13 +20,18 @@ namespace PerformanceBiller.Tests
                 "Amount owed is $1,730.00\n" +
                 "You earned 47 credits\n";
 
-            var calculators = new IPlayTypeCalculator[2]
+            var performanceCalculators = new IPlayTypeCalculator[2]
             {
                 new TragedyPlayTypeCalculator(),
                 new ComedyPlayTypeCalculator()
             };
 
-            var statement = new Statement(calculators);
+            var creditsCalculators = new IAdditionalPerformanceCreditCalculator[]
+            {
+                new ComedyAdditionalPerformanceCreditCalculator()
+            };
+
+            var statement = new Statement(performanceCalculators, creditsCalculators);
 
             using (var invoicesFile = File.OpenText("..\\..\\..\\invoices.json"))
             using (var playsFile = File.OpenText("..\\..\\..\\plays.json"))
