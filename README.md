@@ -10,38 +10,42 @@ This exercise is a port from the Rectoring 2 book exercise that can be found int
 > performances—think of it as a customer loyalty mechanism.
 > The performers store data about their plays in a simple JSON file that looks something like this:
 
-```json
-		plays.json…
-	  {
-  		"hamlet": {"name": "Hamlet", "type": "tragedy"},
-		  "as-like": {"name": "As You Like It", "type": "comedy"},
-		  "othello": {"name": "Othello", "type": "tragedy"}
-	  }
+```javascript
+
+// plays.json…
+
+{
+  "hamlet": {"name": "Hamlet", "type": "tragedy"},
+  "as-like": {"name": "As You Like It", "type": "comedy"},
+  "othello": {"name": "Othello", "type": "tragedy"}
+}
 ```
 
 > The data for their bills also comes in a JSON file:
 
-```json
-	 invoices.json…
-   [
-     {
-       "customer": "BigCo",
-       "performances": [
-         {
-           "playID": "hamlet",
-           "audience": 55
-         },
-         {
-           "playID": "as-like",
-           "audience": 35
-         },
-         {
-           "playID": "othello",
-           "audience": 40
-         }
-       ]
-     }
-   ]
+```javascript
+
+// invoices.json…
+
+[
+  {
+    "customer": "BigCo",
+    "performances": [
+      {
+        "playID": "hamlet",
+        "audience": 55
+      },
+      {
+        "playID": "as-like",
+        "audience": 35
+      },
+      {
+        "playID": "othello",
+        "audience": 40
+      }
+    ]
+  }
+]
 ```
 
 The code found in `PerformanceBiller.Statement` class will create the following output:
