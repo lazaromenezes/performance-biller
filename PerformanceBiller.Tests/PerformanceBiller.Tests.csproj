@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -14,6 +14,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PerformanceBiller\PerformanceBiller.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="invoices.json" CopyToOutputDirectory="Always"/>
+    <None Update="plays.json" CopyToOutputDirectory="Always"/>
   </ItemGroup>
 
 </Project>

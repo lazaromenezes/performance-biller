@@ -19,9 +19,9 @@ namespace PerformanceBiller.Tests
 
             var statement = new Statement();
 
-            using (var invoicesFile = File.OpenText("..\\..\\..\\invoices.json"))
+            using (var invoicesFile = File.OpenText("invoices.json"))
             using (var invoicesReader = new JsonTextReader(invoicesFile))
-            using (var playsFile = File.OpenText("..\\..\\..\\plays.json"))
+            using (var playsFile = File.OpenText("plays.json"))
             using (var playsReader = new JsonTextReader(playsFile)) {
                 var invoices = (JArray) JToken.ReadFrom(invoicesReader);
 
