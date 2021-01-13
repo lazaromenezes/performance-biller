@@ -1,0 +1,3 @@
+language = "c#"
+onBoot = "echo Booting .NET repl...."
+run = "chmod +x ./run.sh && ./run.sh"
